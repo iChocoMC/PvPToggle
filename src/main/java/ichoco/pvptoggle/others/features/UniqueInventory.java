@@ -14,7 +14,7 @@ public class UniqueInventory extends Methods_Abstract {
 			return true;
 		}
 
-		if(player.getInventory().equals(inventory)){
+		if(!player.getInventory().equals(inventory)){
 			backInventory(mode, player);
 			return true;
 		}
