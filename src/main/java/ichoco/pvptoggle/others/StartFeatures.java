@@ -3,6 +3,7 @@ package ichoco.pvptoggle.others;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
+import ichoco.pvptoggle.others.features.UniqueInventory;
 import ichoco.pvptoggle.utils.Config_Util;
 import ichoco.pvptoggle.utils.Location_Util;
 
@@ -36,6 +37,11 @@ public class StartFeatures {
 			randomLocations = false,
 			uniqueInventory = false;
 
+		// Checks start here
+		if(Config_Util.getConfiguration().getBoolean("unique-inventory")){
+			uniqueInventory = true;
+		}
+		
 		if(Config_Util.getConfiguration().getBoolean("random-locations.enable")){
 			randomLocations = true;
 
@@ -45,7 +51,10 @@ public class StartFeatures {
 			for(String line : Config_Util.getConfiguration().getStringList("random-locations-list")){
 				location_Util.newLocation(line);
 			}
+		}//End Here
 
+		//Start options
+		if(!uniqueInventory && randomLocations){
 			normal = new Methods_Abstract() {
 				@Override
 				public boolean toggle(String mode, Player player) {
@@ -55,68 +64,26 @@ public class StartFeatures {
 					return false;
 				}
 			};
-		}
-
-		if(Config_Util.getConfiguration().getBoolean("unique-inventory")){
-			uniqueInventory = true;
-
-			if (!randomLocations){
-				normal = new Methods_Abstract() {
-					@Override
-					public boolean toggle(String mode, Player player) {
-						if(inventory == null){
-							inventory = player.getInventory();
-							return true;
-						}
-
-						if(player.getInventory().equals(inventory)){
-							backInventory(mode, player);
-							return true;
-						}
-				
-						addItems(mode, player);
-						return false;
-					}
-
-					@Override
-					public void backInventory(String mode, Player player) {
-						PlayerInventory playerInventory = player.getInventory();
-						playerInventory.setArmorContents(inventory.getArmorContents());
-						playerInventory.setContents(inventory.getContents());
-					}
-				};
-			} else {
-				normal = new Methods_Abstract() {
-					@Override
-					public boolean toggle(String mode, Player player) {
-						if(inventory == null){
-							inventory = player.getInventory();
-							return true;
-						}
-
-						if(player.getInventory().equals(inventory)){
-							backInventory(mode, player);
-							return true;
-						}
-				
-						addItems(mode, player);
-						location_Util.teleport(player);
-						return false;
-					}
-
-					@Override
-					public void backInventory(String mode, Player player) {
-						PlayerInventory playerInventory = player.getInventory();
-						playerInventory.setArmorContents(inventory.getArmorContents());
-						playerInventory.setContents(inventory.getContents());
-					}
-				};
-			}
-		}
-
-		if(!uniqueInventory && !randomLocations){
-			normal = new Methods_Abstract() {};
 			return;
 		}
+
+		if(uniqueInventory && randomLocations){
+			normal = new UniqueInventory(){
+				@Override
+				public boolean toggle(String mode, Player player) {
+					super.toggle(mode, player);
+					location_Util.teleport(player);
+					return false;
+				}
+			};
+			return;
+		}
+
+		if(uniqueInventory && !randomLocations){
+			normal = new UniqueInventory(){};
+			return;
+		}
+		normal = new Methods_Abstract(){};
+		//End Options
 	}
 }
