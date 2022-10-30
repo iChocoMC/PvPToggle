@@ -25,16 +25,13 @@ public abstract class Methods_Abstract {
 
 	public void backInventory(String mode, Player player){
 		PlayerInventory playerInventory = player.getInventory();
+		PlayerInventory Inventory_HASHMAP = playersInventory.get(player.getUniqueId());
 
-		if(playersInventory.containsKey(player.getUniqueId())){
-			PlayerInventory Inventory_HASHMAP = playersInventory.get(player.getUniqueId());
+		playerInventory.setContents(Inventory_HASHMAP.getContents());
+		playerInventory.setArmorContents(Inventory_HASHMAP.getArmorContents());
 
-			playerInventory.setContents(Inventory_HASHMAP.getContents());
-			playerInventory.setArmorContents(Inventory_HASHMAP.getArmorContents());
-
-			playersInventory.remove(player.getUniqueId(), playerInventory);
-			return;
-		}
+		playersInventory.remove(player.getUniqueId(), playerInventory);
+		return;
 	}
 
 	//Start static methods
@@ -42,7 +39,7 @@ public abstract class Methods_Abstract {
 		return new ItemStack(Material.getMaterial(Config_Util.getModes().getString(string)));
 	}
 
-	private static void addItems(String mode, Player player){
+	public static void addItems(String mode, Player player){
 		String
 			armor = mode+".armor.",
 			items = mode+".items";

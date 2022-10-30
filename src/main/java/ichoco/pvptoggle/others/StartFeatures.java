@@ -10,7 +10,7 @@ public class StartFeatures {
 
 	private static StartFeatures features;
 
-	public Methods_Abstract random_Locations, unique_inventory, normal;
+	public Methods_Abstract normal;
 	public Location_Util location_Util;
 	public PlayerInventory inventory;
 
@@ -18,17 +18,26 @@ public class StartFeatures {
 		start();
 	}
 
+	public static StartFeatures getFeatures(){
+		if (features == null){
+			features = new StartFeatures();
+		}
+		return features;
+	}
+
+	//Start Features Here
+	
 	public void toggle(String mode, Player player){
 		normal.toggle(mode, player);
 	}
 
 	private void start(){
 		boolean 
-			randomLocations_Boolean = false,
-			uniqueInventory_Boolean = false;
+			randomLocations = false,
+			uniqueInventory = false;
 
 		if(Config_Util.getConfiguration().getBoolean("random-locations.enable")){
-			randomLocations_Boolean = true;
+			randomLocations = true;
 
 			location_Util = new Location_Util();
 			location_Util.setupUtil();
@@ -37,7 +46,7 @@ public class StartFeatures {
 				location_Util.newLocation(line);
 			}
 
-			random_Locations = new Methods_Abstract() {
+			normal = new Methods_Abstract() {
 				@Override
 				public boolean toggle(String mode, Player player) {
 					if (!super.toggle(mode, player)){
@@ -49,36 +58,54 @@ public class StartFeatures {
 		}
 
 		if(Config_Util.getConfiguration().getBoolean("unique-inventory")){
-			uniqueInventory_Boolean = true;
+			uniqueInventory = true;
 
-			if (random_Locations == null){
-				unique_inventory = new Methods_Abstract() {
+			if (!randomLocations){
+				normal = new Methods_Abstract() {
 					@Override
-					public void backInventory(String mode, Player player) {
+					public boolean toggle(String mode, Player player) {
 						if(inventory == null){
 							inventory = player.getInventory();
-							return;
+							return true;
 						}
-	
+
+						if(player.getInventory().equals(inventory)){
+							backInventory(mode, player);
+							return true;
+						}
+				
+						addItems(mode, player);
+						return false;
+					}
+
+					@Override
+					public void backInventory(String mode, Player player) {
 						PlayerInventory playerInventory = player.getInventory();
 						playerInventory.setArmorContents(inventory.getArmorContents());
 						playerInventory.setContents(inventory.getContents());
 					}
 				};
 			} else {
-				unique_inventory = new Methods_Abstract() {
+				normal = new Methods_Abstract() {
 					@Override
 					public boolean toggle(String mode, Player player) {
-						random_Locations.toggle(mode, player);
+						if(inventory == null){
+							inventory = player.getInventory();
+							return true;
+						}
+
+						if(player.getInventory().equals(inventory)){
+							backInventory(mode, player);
+							return true;
+						}
+				
+						addItems(mode, player);
+						location_Util.teleport(player);
 						return false;
 					}
 
+					@Override
 					public void backInventory(String mode, Player player) {
-						if(inventory == null){
-							inventory = player.getInventory();
-							return;
-						}
-	
 						PlayerInventory playerInventory = player.getInventory();
 						playerInventory.setArmorContents(inventory.getArmorContents());
 						playerInventory.setContents(inventory.getContents());
@@ -87,24 +114,9 @@ public class StartFeatures {
 			}
 		}
 
-		if(randomLocations_Boolean == false && uniqueInventory_Boolean == false){
+		if(!uniqueInventory && !randomLocations){
 			normal = new Methods_Abstract() {};
 			return;
 		}
-		if(randomLocations_Boolean == false && uniqueInventory_Boolean == true){
-			normal = unique_inventory;
-			return; 
-		}
-		if(randomLocations_Boolean == true && uniqueInventory_Boolean == false){
-			normal = random_Locations;
-			return; 
-		}
-	}
-
-	public static StartFeatures getFeatures(){
-		if (features == null){
-			features = new StartFeatures();
-		}
-		return features;
 	}
 }

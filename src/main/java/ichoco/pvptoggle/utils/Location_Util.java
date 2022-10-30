@@ -11,6 +11,11 @@ public class Location_Util{
 	private ArrayList<Location> locations;
 	private Random random;
 
+	public void setupUtil(){
+		locations = new ArrayList<Location>();
+		random = new Random(); 
+	}
+
 	public void newLocation(String line) {
 		String[] parts = line.split(",");
 		locations.add(new Location(
@@ -24,13 +29,5 @@ public class Location_Util{
 
 	public void teleport(Player player){
 		player.teleport(locations.get(random.nextInt(locations.size())));
-	}
-
-	public ArrayList<Location> getLocations()
-	{ return locations; }
-
-	public void setupUtil(){
-		locations = new ArrayList<Location>();
-		random = new Random(); 
 	}
 }
