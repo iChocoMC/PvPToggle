@@ -1,0 +1,5 @@
+random-locations:
+  enable: false
+  list:
+    - 0,60,0,world
+    #X,Y,Z,world

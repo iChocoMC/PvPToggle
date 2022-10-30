@@ -1,0 +1,33 @@
+modes: "easy,normal,hard"
+#Remember change this if you created new play modes
+#Example: "gold,iron,diamond"
+
+easy:
+  items:
+    - "DIAMOND_SWORD,1" # ITEM,AMOUNT
+    - "GOLDEN_APPLE,6"
+  armor:
+    healtmet: "DIAMOND_HEALTMET"
+    chestplate: "IRON_CHESTPLATE"
+    leggins: "DIAMOND_LEGGINS"
+    boots: "DIAMOND_BOOTS"
+  
+normal:
+  items:
+    - "DIAMOND_SWORD,1" # ITEM,AMOUNT
+    - "GOLDEN_APPLE,6"
+  armor:
+    healtmet: "DIAMOND_HEALTMET"
+    chestplate: "IRON_CHESTPLATE"
+    leggins: "DIAMOND_LEGGINS"
+    boots: "DIAMOND_BOOTS"
+
+hard:
+  items:
+    - "DIAMOND_SWORD,1" # ITEM,AMOUNT
+    - "GOLDEN_APPLE,6"
+  armor:
+    healtmet: "DIAMOND_HEALTMET"
+    chestplate: "IRON_CHESTPLATE"
+    leggins: "DIAMOND_LEGGINS"
+    boots: "DIAMOND_BOOTS"

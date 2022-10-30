@@ -1,0 +1,8 @@
+name: PvPToggle
+description: A basic pvptoggle plugin
+author: iChocoMilk_
+main: ichoco.pvptoggle.PvPToggle_Main
+version: 0.2
+
+commands:
+  toggle:
